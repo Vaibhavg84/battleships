@@ -20,7 +20,60 @@ namespace Battleships
         // returns: the number of ships sunk by the set of guesses
         public static int Play(string[] ships, string[] guesses)
         {
-            return 0;
+            List<int> lstGuess = new List<int>();
+            int ship_startingPos, ship_EndPos;
+            List<int> shipsCordinates = new List<int>();
+            Dictionary<string, List<int>> dicShips = new Dictionary<string, List<int>>();
+            int count = 0;
+            foreach (string ship in ships) // Ships Positions
+            {
+                count = count + 1;
+                ship_startingPos = Convert.ToInt32(ship.Split(',')[0].Replace(":", ""));
+                ship_EndPos = Convert.ToInt32(ship.Split(',')[1].Replace(":", ""));
+                if (ship_EndPos - ship_startingPos < 8) // horizontal ship
+                {
+                    shipsCordinates = new List<int>();
+                    for (int i = ship_startingPos; i <= ship_EndPos; i++)
+                    {
+                        shipsCordinates.Add(i);
+                    }
+                    dicShips.Add("Ship" + count, shipsCordinates);
+
+                }
+                else
+                {
+                    shipsCordinates = new List<int>();
+                    for (int i = ship_startingPos; i <= ship_EndPos; i = i + 10)
+                    {
+                        shipsCordinates.Add(i);
+                    }
+                    dicShips.Add("Ship" + count, shipsCordinates);
+                }
+            }
+            foreach (string guess in guesses)
+            {
+                lstGuess.Add(Convert.ToInt32(guess.Replace(":", "")));
+            }
+            foreach (int number in lstGuess)
+            {
+                foreach (var details in dicShips)
+                {
+                    if (details.Value.Contains(number))
+                    {
+                        details.Value.Remove(number);
+                    }
+                }
+            }
+            int shipsCount = 0;
+            foreach (var details in dicShips)
+            {
+                if (details.Value.Count == 0)
+                {
+                    shipsCount = shipsCount + 1;
+                }
+
+            }
+            return shipsCount;
         }
     }
 }
